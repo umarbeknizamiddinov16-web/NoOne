@@ -17,7 +17,7 @@ export default function QuantumDraw() {
   const [isDrawing, setIsDrawing] = useState(false);
   const [selectedLine, setSelectedLine] = useState<number | null>(null);
   const [isRotating, setIsRotating] = useState(false);
-  
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const currentLinePoints = useRef<{ x: number; y: number }[]>([]);
   const startRotateAngle = useRef<number>(0);
@@ -55,14 +55,14 @@ export default function QuantumDraw() {
 
   const getLineCenter = (line: DrawingLine) => {
     if (!line.points || line.points.length === 0) return { x: 0, y: 0 };
-    const firstPt = line.points;
+    const firstPt = line.points[0];
     return {
       x: firstPt.x + line.position.x,
       y: firstPt.y + line.position.y
     };
   };
 
-  // ИСПРАВЛЕНО: Глобальная функция вращения, которая ловит движение по всему экрану window
+
   useEffect(() => {
     const handleGlobalMove = (e: any) => {
       if (!isRotating || selectedLine === null) return;
@@ -115,7 +115,7 @@ export default function QuantumDraw() {
 
     lines.forEach((line) => {
       if (!line.points || line.points.length < 2) return;
-      
+
       ctx.save();
       const firstPt = line.points[0];
       ctx.translate(firstPt.x + line.position.x, firstPt.y + line.position.y);
@@ -276,7 +276,7 @@ export default function QuantumDraw() {
       {lines.map((line) => {
         if (!line.points || line.points.length === 0) return null;
         const firstPoint = line.points[0];
-        
+
         return (
           <motion.div
             key={line.id}
@@ -287,12 +287,12 @@ export default function QuantumDraw() {
                 prev.map((l) =>
                   l.id === line.id
                     ? {
-                        ...l,
-                        targetPosition: {
-                          x: l.targetPosition.x + info.delta.x,
-                          y: l.targetPosition.y + info.delta.y,
-                        },
-                      }
+                      ...l,
+                      targetPosition: {
+                        x: l.targetPosition.x + info.delta.x,
+                        y: l.targetPosition.y + info.delta.y,
+                      },
+                    }
                     : l
                 )
               );
@@ -305,11 +305,10 @@ export default function QuantumDraw() {
               left: firstPoint.x + line.position.x,
               top: firstPoint.y + line.position.y,
             }}
-            className={`absolute w-6 h-6 md:w-5 md:h-5 -translate-x-1/2 -translate-y-1/2 rounded-full border backdrop-blur-sm pointer-events-auto cursor-move flex items-center justify-center transition-colors z-50 ${
-              selectedLine === line.id
+            className={`absolute w-6 h-6 md:w-5 md:h-5 -translate-x-1/2 -translate-y-1/2 rounded-full border backdrop-blur-sm pointer-events-auto cursor-move flex items-center justify-center transition-colors z-50 ${selectedLine === line.id
                 ? 'bg-purple-500/20 border-purple-400 shadow-[0_0_15px_#a855f7]'
                 : 'bg-white/5 border-white/20'
-            }`}
+              }`}
           >
             <div className="w-1.5 h-1.5 md:w-1 md:h-1 rounded-full bg-white" />
           </motion.div>
